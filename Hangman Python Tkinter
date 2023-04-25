@@ -4,7 +4,7 @@ import random
 
 window = tk.Tk()
 window.title("Hangman")
-window.iconbitmap(r'C:\Users\hp\PycharmProjects\pythonProject\game.ico')
+#window.iconbitmap(r'C:\Users\hp\PycharmProjects\pythonProject\game.ico') For window icon
 
 canvas = tk.Canvas(window, width=700, height=450)
 canvas.pack()
@@ -12,7 +12,7 @@ canvas.pack()
 start_frame = tk.Frame(window)
 start_frame.pack()
 
-photo = PhotoImage(file="C:/Users/hp/PycharmProjects/pythonProject/hangman.png")
+photo = PhotoImage(file="C:/Users/hp/PycharmProjects/pythonProject/hangman.png") #ADD YOUR OWN IMAGE PATH
 label = tk.Label(image=photo)
 label.place(x=100, y=200)
 
