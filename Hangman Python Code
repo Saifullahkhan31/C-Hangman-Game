@@ -1,0 +1,104 @@
+import tkinter as tk
+from tkinter import PhotoImage
+import random
+
+window = tk.Tk()
+window.title("Hangman")
+window.iconbitmap(r'C:\Users\hp\PycharmProjects\pythonProject\game.ico')
+
+canvas = tk.Canvas(window, width=700, height=450)
+canvas.pack()
+
+start_frame = tk.Frame(window)
+start_frame.pack()
+
+photo = PhotoImage(file="C:/Users/hp/PycharmProjects/pythonProject/hangman.png")
+label = tk.Label(image=photo)
+label.place(x=100, y=200)
+
+start_label = tk.Label(start_frame, text="Welcome to Hangman!", font=("Arial", 16))
+start_label.pack(pady=20)
+
+word_list = ["python", "programming", "computer", "algorithm", "software"]
+correct_letters = []
+incorrect_letters = []
+
+
+def start_game():
+    global correct_letters
+    global incorrect_letters
+
+    start_frame.destroy()
+
+    word = random.choice(word_list)
+    correct_letters = []
+    incorrect_letters = []
+
+    def draw_hangman(num_wrong):
+        if num_wrong == 0:
+            return
+        elif num_wrong == 1:
+            canvas.create_line(600, 400, 700, 400)
+        elif num_wrong == 2:
+            canvas.create_line(650, 400, 650, 200)
+        elif num_wrong == 3:
+            canvas.create_line(550, 200, 700, 200)
+        elif num_wrong == 4:
+            canvas.create_line(550, 200, 550, 250)
+        elif num_wrong == 5:
+            canvas.create_oval(580, 250, 520, 300)
+        elif num_wrong == 6:
+            canvas.create_line(550, 300, 550, 350)
+        elif num_wrong == 7:
+            canvas.create_line(550, 325, 525, 300)
+            canvas.create_line(550, 325, 575, 300)
+        elif num_wrong == 8:
+            canvas.create_line(550, 350, 525, 375)
+            canvas.create_line(550, 350, 575, 375)
+
+    def update_display():
+        num_wrong = len(incorrect_letters)
+        # delete only the items with the "wrong guessed" tag
+        canvas.delete("wrongguessed")
+        draw_hangman(num_wrong)
+        for i in range(len(word)):
+            if word[i] in correct_letters:
+                canvas.create_text(50 + i * 30, 300, text=word[i], font=("Arial", 24), tags="guessed")
+            else:
+                canvas.create_text(50 + i * 30, 300, text="_", font=("Arial", 24), tags="guessed")
+                canvas.create_text(200, 350, text=" ".join(incorrect_letters), font=("Arial", 18), tags="wrongguessed")
+        # delete only the items with the "guessed" tag
+        # canvas.delete("wrongguessed")
+
+    def handle_guess(guess):
+        if guess in correct_letters or guess in incorrect_letters:
+            return
+        if guess in word:
+            correct_letters.append(guess)
+        else:
+            incorrect_letters.append(guess)
+        update_display()
+        if len(incorrect_letters) == 8:
+            end_game("lose")
+        if set(correct_letters) == set(word):
+            end_game("win")
+
+    def end_game(result):
+        if result == "win":
+            message = "You win!"
+        else:
+            message = "You lose! The word was " + word
+        canvas.create_text(200, 200, text=message, font=("Arial", 16))
+
+    for letter in "abcdefghijklmnopqrstuvwxyz":
+        btn = tk.Button(window, text=letter, font=("Arial", 16), command=lambda x=letter: handle_guess(x))
+        btn.pack(side="left", padx=7, pady=7)
+
+    update_display()
+
+
+start_button = tk.Button(start_frame, text="Start Game", font=("Arial", 16), command=start_game)
+start_button.pack()
+
+
+window.mainloop()
